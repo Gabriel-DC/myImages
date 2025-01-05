@@ -152,4 +152,4 @@ dist
 *.vsix
 
 #mysql Content
-./mysql/
+mysql
