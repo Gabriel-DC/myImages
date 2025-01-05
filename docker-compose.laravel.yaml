@@ -1,0 +1,31 @@
+#COMANDOS
+
+# SUBIR DOCKER COMPOSE: docker-compose up -d (use --build para reconstruir as imagens)
+# DROPAR CONTAINERS DOCKER COMPOSE: docker-compose down
+
+version: '3'
+
+services:
+
+  laravel:
+    build:
+      context: ./image-laravel
+      dockerfile: Dockerfile.prod
+    image: gabrieldcgh/laravel:prod
+    container_name: laravel
+    networks:
+      - laranet
+  ngix:
+    build:
+      context: ./image-nginx
+      dockerfile: Dockerfile.prod
+    image: gabrieldcgh/nginx:prod
+    container_name: nginx
+    networks:
+      - laranet
+    ports:
+      - "8080:80"
+
+networks:
+  laranet:
+    driver: bridge
