@@ -150,3 +150,6 @@ dist
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+#mysql Content
+./mysql/
