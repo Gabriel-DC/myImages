@@ -1,42 +1,14 @@
-#COMANDOS
 
-# SUBIR DOCKER COMPOSE: docker-compose up -d (use --build para reconstruir as imagens)
-# DROPAR CONTAINERS DOCKER COMPOSE: docker-compose down
 
 version: '3'
 
 services:
-  app:
+  app-go:
     build:
-      context: image-node
-    container_name: app
-    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s docker-entrypoint.sh
-    networks:
-      - node-network
+      context: image-go
+    container_name: app-go
     volumes:
-      - ./image-node:/usr/src/app
+      - ./image-go/app:/usr/src/app
     tty: true
     ports:
       - "3000:3000"
-    depends_on:
-      - db
-
-  db:
-    image: mysql:8.4
-    command: --innodb-use-native-aio=0
-    container_name: db
-    restart: always
-    tty: true
-    volumes:
-      - ./mysql:/var/lib/mysql
-    environment:
-      - MYSQL_DATABASE=nodedb
-      - MYSQL_ROOT_PASSWORD=root
-    networks:
-      - node-network
-    ports:
-      - "3306:3306"
-
-networks:
-  node-network:
-    driver: bridge
