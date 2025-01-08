@@ -4,9 +4,9 @@ RUN rm /etc/nginx/conf.d/default.conf
 
 # COPIANDO O ARQUIVO DE CONFIGURAÇÃO DO NGINX
 COPY nginx.conf /etc/nginx/conf.d
+COPY nginx.conf /etc/nginx/sites-available/myserver
 
 RUN mkdir /var/www/html -p && touch /var/www/html/index.php
 
-# COPY html /usr/share/nginx/html
-# ENTRYPOINT [ "/docker-entrypoint.sh" ]
-# CMD [ "nginx", "-g", "daemon off;" ]
+RUN cd /etc/nginx/sites-available/
+RUN ln -s /etc/nginx/sites-available/myserver

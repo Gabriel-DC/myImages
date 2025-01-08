@@ -3,12 +3,52 @@
 version: '3'
 
 services:
-  app-go:
+  app:
     build:
-      context: image-go
-    container_name: app-go
+      context: image-node
+      dockerfile: Dockerfile.hml
+    container_name: app
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s docker-entrypoint.sh
+    networks:
+      - node-network
     volumes:
-      - ./image-go/app:/usr/src/app
+      - ./image-node:/usr/src/app
     tty: true
     ports:
       - "3000:3000"
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.4
+    command: --innodb-use-native-aio=0
+    container_name: db
+    restart: always
+    tty: true
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=nodedb
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - node-network
+    ports:
+      - "3306:3306"
+
+  ngix:
+    build:
+      context: ./image-nginx-publish
+      dockerfile: Dockerfile.prod
+    image: gabrieldcgh/nginx:prod
+    container_name: nginx
+    networks:
+      - node-network
+    ports:
+      - "8080:80"
+    depends_on:
+      - app
+
+networks:
+  node-network:
+    name: node-network
+    driver: bridge

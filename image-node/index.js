@@ -17,7 +17,14 @@ connection.query(sql);
 connection.end();
 
 app.get('/', (req, res) => {
-    res.send('<h1>Node with Express using Docker Container');
+    const conn = mysql.createConnection(config);
+    conn.query("SELECT * FROM people", function (err, result, fields) {
+        if (err)
+            res.send(`<h1>Node with Express using Docker Container</h1>
+            ${result.toString()}`);
+
+        res.send('<h1>Node with Express using Docker Container</h1>');
+      });
 });
 
 app.listen(port, () => console.log('Server is running 3000'));
